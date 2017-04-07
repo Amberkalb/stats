@@ -74,9 +74,22 @@ Since the variables we are interested in are continuous, we will run Pearson's R
 ```{r}
 cor.test(carat, price, method = "pearson")
 ```
+Interpretation:
+Pearson’s corr: strong relationship (perfect at 1, at 0 no relationship between variables (range -1 to 1) and positive (there would a neg sign if otherwise).  
 
-Pearson’s corr: strong relationship (perfect at 1, at 0 no relationship between variables (range -1 to 1) and positive (there would a neg sign if otherwise).  Can only use for linear relationship, so scatterplot the data first to illustrate the relationship Linear or nonlinear. 
+```{r}
+cor.test(depth, price, method = "pearson")
+```
+Interpretation: 
+____________
 
+```{r}
+library(plyr)
+diamonds$color <- revalue(diamonds$color,
+               c("D"="1", "E"="2", "F"="3", "G"="4", "H"="5", "I"="6", "J"="7"))
+as.numeric(diamonds$color)
+cor.test(color, price, method = "spearman")
+```
 Sig. ---  @ .01--97%
 	.001---99%
 	.05---95% 
