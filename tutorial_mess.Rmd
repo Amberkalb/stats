@@ -1,0 +1,84 @@
+---
+title: "Statistical Data Analysis"
+author: "Amber Kalb"
+date: "3/31/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+require(datasets)
+chickwts
+data("chickwts")
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(chickwts$feed)
+feeds <- table(chickwts$feed)
+feeds
+barplot(feeds[order(feeds, decreasing = TRUE)])
+```
+
+
+```{r}
+
+data(lynx)
+hist(lynx)
+h<- hist(lynx, 
+         breaks = 11,
+        freq = FALSE,
+        main = "Poop")
+#If freq = FALSE, this will draw normal distribution
+
+curve(dnorm(x, mean = mean(lynx), sd = sd(lynx)),
+      col = "Thistle4",
+      lwd = 2,
+      add = TRUE)
+
+```
+
+```{r}
+require("datasets")
+data(cars)
+cars
+```
+
+### Calculate Descriptives
+```{r}
+summary(cars$speed) #summary of one variable
+summary(cars) #summary of entire table
+#These are the numbers that define the boxplot.. So lets take a look at that.
+boxplot.stats(cars$speed)
+# conf = confidence intervals around the median
+# out = outliers (which we have none in this data set)
+# You can load the psych package for more statistics such as "skewness" and "trimming" aka top-coding.
+#Ok, now we are moving on to inferential statistics.
+```
+
+
+### Inferential Statistics
+
+```{r}
+#single proportion: Hypothesis test and confidence interval
+#The Washington Redsocks won 98 games out of 162. Did they do significantly better than 50%? (Nationals had a signifcantly better than 50% season)
+prop.test(98, 162)
+
+```
+
+
+
+
+
