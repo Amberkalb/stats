@@ -10,8 +10,10 @@ knitr::opts_chunk$set(echo = TRUE)
 options(repos=structure(c(CRAN="http://cran.r-project.org")))
 options(repos="https://cran.rstudio.com" )
 install.packages("pscl", repos = "https://cran.rstudio.com")
+install.packages("dplyr")
+install.packages("ggplot2")
 ```
-
+##Introduction
 ### Statistical Models, what is it good for?
 
 The purpose of statistics is to describe and predict information. This can be divided into descriptive statistics and inferential statistics. Sometimes we collect data in an attempt to describe the characteristics of a population and other times we want to make predictions. 
@@ -20,36 +22,38 @@ __Statistical Models__ are built from the data we collect in order to explain a 
 ### Types of Models
 We will be going over two types of statistical models that can be built in R: __correlations__ and __linear regressions__.
 But, before you can understand the types of statistical models, we must first understand the reason these models exist. Statistical models exist because we are looking for a relationship between two, or sometimes more, variables.
-In the case of correlations, we are looking for how much variables co-vary. There are a variety of test we can run to find the relationship between variables, but the appropriate test will depend on the type of variables we want to model. In this tutorial we will be using the diamonds data frame to model the relationship between carat, cut, color, depth, clarity and price. 
 
-Let's look at our at our variables
+In the case of correlations, we are looking for how much variables co-vary. There are a variety of test we can run to find the relationship between variables, but the appropriate test will depend on the type of variables we want to model. 
+
+In this tutorial we will be using the diamonds data frame to model the relationship between carat, cut, color, depth, clarity and price. 
+
+Let's look at our at our variables:
 
 ```{r}
-install.packages("dplyr")
-install.packages("ggplot2")
 library(ggplot2)
 
 diamonds 
 ```
-As we can see there are continuous and discrete variables. The type of test you run will be dependent on the type of data you want to model. For a correlation, both DV and IV should be continuous. But if you have two categorical a Chi square would be appropriate. 
+As we can see there are continuous and discrete variables. The type of test you run will be dependent on the type of data you want to model. For a correlation, both DV and IV should be continuous. But, for example, if you have two categorical variables, a Chi square test would be appropriate to find out the differences between groups. 
 
 #### Correlations
-Let's say you wanted estimate the price of a diamond. You might ask what the relationship is between the carat and the cost of the diamond in order to predict how ramen noodle packages you might need to consume before you can afford your diamond. Would the relationship be positive between carat and cost (the larger the carat, the higher the cost?), negative (the larger the carat, the lower the cost?), or if there is even a relationship to begin with (the carat size has no relationship with the cost, maybe the cut matters)?
-Since our variables are continuous (interval-ratio), we will be performing a zero-ordered correlation, which asks "How strongly and in what direction (i.e., +, -) are the IV and DV related?" 
+Let's say you wanted estimate the price of a diamond. You might ask what the relationship is between the carat and the cost of the diamond in order to predict how many ramen noodle packages you might need to consume before you can afford your diamond. Would the relationship be positive between carat and cost (the larger the carat, the higher the cost?), negative (the larger the carat, the lower the cost?), or if there is even a relationship to begin with (the carat size has no relationship with the cost, maybe the cut matters)?
+
+Since our variables (carat and cost) are continuous (interval-ratio), we will be performing a zero-ordered correlation, which will answer two questions: (1) How strongly and (2) in what direction (i.e., +, -) are the IV and DV related? 
 
 ```{r}
 library("Hmisc")
 attach(diamonds)
-plot(price, carat, main="Scatterplot Example", 
-  	xlab="Price", ylab="carat") +
+plot(price, carat, main="Scatterplot of Price and Carat", 
+  	xlab="Price", ylab="Carat") +
 abline(lm(carat~price), col="red")
   
 ```
 
 ```{r}
 attach(diamonds)
-plot(price, depth, main="Scatterplot Example 2", 
-  	xlab="price", ylab="dpeth") +
+plot(price, depth, main="Scatterplot of Price and Depth", 
+  	xlab="Price", ylab="Depth") +
   abline(lm(depth~price), col="red")
 ```
 Now we know we want to definitively check the direction and the strength of the relationship between our variables.
@@ -146,9 +150,13 @@ Perhaps the most common and most powerful statistical technique that we use is M
 ```{r}
 multregdiamond = lm(price ~ depth + carat, data = diamonds)
 summary(multregdiamond)
+
+multregdie <- lm(price ~ depth + carat, data = diamonds)
+
+multregdie
 ```
 
-
+If we just look at reg1, that's the object we just created, it's gonna give us just the coefficients. It gives us the call there and it gives us the coeffcients and you can see, for instance, that some of them are positive, some of them are negative. 
 
 
 Resources: http://www.socialresearchmethods.net/selstat/p7_2.htm
