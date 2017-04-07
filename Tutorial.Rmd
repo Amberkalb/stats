@@ -1,0 +1,110 @@
+---
+title: "Correlation and Reg. Tutorial"
+author: "Amber"
+date: "4/3/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Statistical Models, what is it good for?
+
+The purpose of statistics is to describe and predict information. This can be divided into descriptive statistics and inferential statistics. Sometimes we collect data in an attempt to describe the characteristics of a population and other times we want to make predictions. 
+__Statistical Models__ are built from the data we collect in order to explain a certain phenomenon. Using our collected data, we want to construct a model that represents the processes in real world as close as possible. Once the model is built, we can use it to test our hypotheses and make predictions. In other words, models are representations for a purpose. Models will differ depending on your research question (your purpose).
+
+### Types of Models
+We will be going over two types of statistical models that can be built in R: __correlations__ and __linear regressions__.
+But, before you can understand the types of statistical models, we must first understand the reason these models exist. Statistical models exist because we are looking for a relationship between two, or sometimes more, variables.
+In the case of correlations, we are looking for how much variables co-vary. There are a variety of test we can run to find the relationship between variables, but the appropriate test will depend on the type of variables we want to model. In this tutorial we will be using the diamonds data frame to model the relationship between carat, cut, color, depth, clarity and price. 
+
+Let's look at our at our variables
+
+```{r Data Frame}
+install.packages("dplyr")
+install.packages("ggplot2")
+library(ggplot2)
+library(datasets)
+diamonds 
+```
+As we can see there are continuous and discrete variables. The type of test you run will be dependent on the type of data you want to model. For a correlation, both DV and IV should be continuous. But if you have two categorical a Chi square would be appropriate. 
+
+#### Correlations
+Let's say you wanted estimate the price of a diamond. You might ask what the relationship is between the carat and the cost of the diamond in order to predict how ramen noodle packages you might need to consume before you can afford your diamond. Would the relationship be positive between carat and cost (the larger the carat, the higher the cost?), negative (the larger the carat, the lower the cost?), or if there is even a relationship to begin with (the carat size has no relationship with the cost, maybe the cut matters)?
+Since our variables are continuous (interval-ratio), we will be performing a zero-ordered correlation, which asks "How strongly and in what direction (i.e., +, -) are the IV and DV related?" 
+
+```{r}
+library("Hmisc")
+attach(diamonds)
+plot(price, carat, main="Scatterplot Example", 
+  	xlab="Price", ylab="carat") +
+abline(lm(carat~price), col="red")
+  
+```
+
+```{r}
+attach(diamonds)
+plot(price, depth, main="Scatterplot Example 2", 
+  	xlab="price", ylab="dpeth") +
+  abline(lm(depth~price), col="red")
+```
+Now we know we want to definitively check the direction and the strength of the relationship between our variables.
+Let's make sure we meet the assumptions for correlations:
+N size, check.
+Random sampling, check (I think...).
+Normal Distribution Curve, let's check. 
+
+```{r}
+hist(diamonds$price, col='grey', freq=FALSE)
+lines(price_dense)
+```
+It certaintly doesn't look normally distributed but let's take a look at one more visual.
+```{r}
+qqnorm(diamonds$price)
+qqline(diamonds$price)
+
+```
+If the data was normal distributed, the data points would fall on the line almost perfectly. As we can see above, this is not the case. 
+As a result we are going to perform a non-parametric test on the data, rather than a paramentric test that assumes normality. 
+
+Since the variables we are interested in are continuous, we will run Pearson's R which will tell us strength and direction of the variables' relationship. 
+
+
+```{r}
+cor.test(carat, price, method = "pearson")
+```
+
+Pearson’s corr: strong relationship (perfect at 1, at 0 no relationship between variables (range -1 to 1) and positive (there would a neg sign if otherwise).  Can only use for linear relationship, so scatterplot the data first to illustrate the relationship Linear or nonlinear. 
+
+Sig. ---  @ .01--97%
+	.001---99%
+	.05---95% 
+
+#### Linear Regression
+Only used when your dependent v. is continuous
+Use logistic when DV is dichotomous 
+(variables are important to determine the appropriate test). 
+
+If you just do put carat and cost, then you will get the same results.
+R squared: the higher the number (closer to one) the better fit the data points to the regression line-- predicts the variance.
+R-squared is a statistical measure of how close the data are to the fitted regression line. 
+
+Unlike a correlation, A regression will allow you input multiple variables into your model to account for other factors that could effecting the price of the diamond which will help you better predict the price. So let’s control for the cut of a diamond.
+
+Coefficient table is my regression   
+
+Under model summary our R squared tells us that the model predicts 87% of the variation in the model. 
+R-squared = Explained variation / Total variation
+R-squared is always between 0 and 100%:
+13% of the variation of the cost of the ring cannot be explained by the cut and carat size, 87% of variation in the different prices for the diamonds can be explained by the cut and the carat.
+Standardized Coefficient Beta = beta weights (positive and negative will be indicated) For example: both carat and depth significantly contribute to explaining the price of diamond rings. The larger the carat, the higher the price. The larger the depth, the price decreases. 
+DEPTH is good for showing ambiguous relationship. 
+Price, not normal distribution, consider top-coding (shave off the top 5%). 
+
+
+
+
+Resources: http://www.socialresearchmethods.net/selstat/p7_2.htm
+
+
