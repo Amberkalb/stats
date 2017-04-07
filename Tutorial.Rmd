@@ -1,5 +1,5 @@
 ---
-title: "Correlation and Reg. Tutorial"
+title: "Correlation and Regression Tutorial"
 author: "Amber"
 date: "4/3/2017"
 output: html_document
@@ -14,9 +14,10 @@ install.packages("dplyr")
 install.packages("ggplot2")
 ```
 ##Introduction
-### Statistical Models, what is it good for?
 
-The purpose of statistics is to describe and predict information. This can be divided into descriptive statistics and inferential statistics. Sometimes we collect data in an attempt to describe the characteristics of a population and other times we want to make predictions. 
+### Statistical Models, what is it good for?
+The purpose of statistics is to describe and predict information. This can be divided into descriptive statistics and inferential statistics. Sometimes we collect data in an attempt to describe the characteristics of a population and other times we want to make predictions.
+
 __Statistical Models__ are built from the data we collect in order to explain a certain phenomenon. Using our collected data, we want to construct a model that represents the processes in real world as close as possible. Once the model is built, we can use it to test our hypotheses and make predictions. In other words, models are representations for a purpose. Models will differ depending on your research question (your purpose).
 
 ### Types of Models
@@ -34,6 +35,7 @@ library(ggplot2)
 
 diamonds 
 ```
+
 As we can see there are continuous and discrete variables. The type of test you run will be dependent on the type of data you want to model. For a correlation, both DV and IV should be continuous. But, for example, if you have two categorical variables, a Chi square test would be appropriate to find out the differences between groups. 
 
 #### Correlations
@@ -41,41 +43,49 @@ Let's say you wanted estimate the price of a diamond. You might ask what the rel
 
 Since our variables (carat and cost) are continuous (interval-ratio), we will be performing a zero-ordered correlation, which will answer two questions: (1) How strongly and (2) in what direction (i.e., +, -) are the IV and DV related? 
 
-```{r}
+```{r, Warning = FALSE}
 library("Hmisc")
 attach(diamonds)
-plot(price, carat, main="Scatterplot of Price and Carat", 
-  	xlab="Price", ylab="Carat") +
-abline(lm(carat~price), col="red")
-  
+plot(carat, price, main="Scatterplot of Price and Carat", 
+  	xlab="Carat Size", ylab="Price") +
+abline(lm(price~carat), col="red")
 ```
 
-```{r}
+By creating a scatterplot, we are able to see that there is a positive relationship between the carat size and cost of a diamond. But we do not know the exact strength of that relationship (to what degree they co-vary), and what if the cost of the diamond had a more ambigious relationship with another predictor variable, such as depth? 
+
+Let's take a look:
+
+```{r, warning= FALSE}
 attach(diamonds)
-plot(price, depth, main="Scatterplot of Price and Depth", 
-  	xlab="Price", ylab="Depth") +
-  abline(lm(depth~price), col="red")
+plot(depth, price, main="Scatterplot of Price and Depth", 
+  	xlab="Depth", ylab="price") +
+  abline(lm(price~depth), col="red")
 ```
-Now we know we want to definitively check the direction and the strength of the relationship between our variables.
+
+In order to definitively check the direction and strength of the relationships, rather than eye-balling it, we would want to run a correlation test.
+
 Let's make sure we meet the assumptions for correlations:
-N size, check.
+Big N size, check.
 Random sampling, check (I think...).
 Normal Distribution Curve, let's check. 
 
-```{r}
-hist(diamonds$price, col='grey', freq=FALSE)
+```{r, warning= FALSE}
+PriceDie <- diamonds$price
+hist(PriceDie, col='grey', freq=FALSE)
 
 ```
-It certaintly doesn't look normally distributed but let's take a look at one more visual.
+
+Remember, a normal distribution takes the shape of a bellcurve. The histogram above certaintly doesn't look normally distributed, but let's take a look at one more visual.
+
 ```{r}
 qqnorm(diamonds$price)
 qqline(diamonds$price)
 
 ```
-If the data was normal distributed, the data points would fall on the line almost perfectly. As we can see above, this is not the case. 
+If the data was distributed normally, the data points would fall along the line almost perfectly. As we can see above, this is not the case. 
 As a result we are going to perform a non-parametric test on the data, rather than a paramentric test that assumes normality. 
 
-Since the variables we are interested in are continuous, we will run Pearson's R which will tell us strength and direction of the variables' relationship. 
+Since the variables we are interested in are continuous, we will run Pearson's R which will tell us the strength and direction of the variables' relationship. 
 
 
 ```{r}
