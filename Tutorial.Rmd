@@ -7,6 +7,9 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+options(repos=structure(c(CRAN="http://cran.r-project.org")))
+options(repos="https://cran.rstudio.com" )
+install.packages("pscl", repos = "https://cran.rstudio.com")
 ```
 
 ### Statistical Models, what is it good for?
@@ -21,11 +24,11 @@ In the case of correlations, we are looking for how much variables co-vary. Ther
 
 Let's look at our at our variables
 
-```{r Data Frame}
+```{r}
 install.packages("dplyr")
 install.packages("ggplot2")
 library(ggplot2)
-library(datasets)
+
 diamonds 
 ```
 As we can see there are continuous and discrete variables. The type of test you run will be dependent on the type of data you want to model. For a correlation, both DV and IV should be continuous. But if you have two categorical a Chi square would be appropriate. 
@@ -57,7 +60,7 @@ Normal Distribution Curve, let's check.
 
 ```{r}
 hist(diamonds$price, col='grey', freq=FALSE)
-lines(price_dense)
+
 ```
 It certaintly doesn't look normally distributed but let's take a look at one more visual.
 ```{r}
@@ -83,13 +86,7 @@ cor.test(depth, price, method = "pearson")
 Interpretation: 
 ____________
 
-```{r}
-library(plyr)
-diamonds$color <- revalue(diamonds$color,
-               c("D"="1", "E"="2", "F"="3", "G"="4", "H"="5", "I"="6", "J"="7"))
-as.numeric(diamonds$color)
-cor.test(color, price, method = "spearman")
-```
+
 Sig. ---  @ .01--97%
 	.001---99%
 	.05---95% 
@@ -105,6 +102,20 @@ R-squared is a statistical measure of how close the data are to the fitted regre
 
 Unlike a correlation, A regression will allow you input multiple variables into your model to account for other factors that could effecting the price of the diamond which will help you better predict the price. So let’s control for the cut of a diamond.
 
+```{r}
+xyplot(price ~ carat, data = diamonds,
+  xlab = "Carat Size",
+  ylab = "Price",
+  main = "The Price of Diamonds by Carat Size") 
+```
+
+Simple (as well as multiple) linear regression is done using the lm() function. For simple regression the formula takes the form DV ~ IV, which should be read something like "DV as modeled by IV" or "DV as predicted by IV". It's critical to remember that the DV must come before the IV. 
+
+```{r}
+diamondreg = lm(price ~ carat, data = diamonds)
+summary(diamondreg)
+```
+Interpretation:
 Coefficient table is my regression   
 
 Under model summary our R squared tells us that the model predicts 87% of the variation in the model. 
@@ -114,6 +125,28 @@ R-squared is always between 0 and 100%:
 Standardized Coefficient Beta = beta weights (positive and negative will be indicated) For example: both carat and depth significantly contribute to explaining the price of diamond rings. The larger the carat, the higher the price. The larger the depth, the price decreases. 
 DEPTH is good for showing ambiguous relationship. 
 Price, not normal distribution, consider top-coding (shave off the top 5%). 
+
+Now, Let's graph it!
+```{r}
+plot(price ~ carat, data= diamonds, main="I got diamonds on diamonds")
+ abline(diamondreg, col="red")
+
+```
+
+
+```{r}
+diamondregdep = lm(price ~ depth, data = diamonds)
+summary(diamondregdep)
+```
+Interpretation:
+
+
+Perhaps the most common and most powerful statistical technique that we use is Multiple Regression where several variables are used collectively to predict scores on a single outcome variable, a quantitative outcome usually. The forumale interface is the same structure for the bivariate analyses performed above except we will add variables to the model now.
+
+```{r}
+multregdiamond = lm(price ~ depth + carat, data = diamonds)
+summary(multregdiamond)
+```
 
 
 
