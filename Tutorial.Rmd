@@ -51,7 +51,7 @@ plot(carat, price, main="Scatterplot of Price and Carat",
 abline(lm(price~carat), col="red")
 ```
 
-By creating a scatterplot, we are able to see that there is a __positive relationship__ between the carat size and cost of a diamond. But we do not know the exact strength of that relationship (to what degree they co-vary). Furthermore, what if the cost of the diamond had a more ambigious relationship with another predictor variable, such as depth? 
+By creating a scatter plot, we are able to see that there is a __positive relationship__ between the carat size and cost of a diamond. But we do not know the exact strength of that relationship (to what degree they co-vary). Furthermore, what if the cost of the diamond had a more ambiguous relationship with another predictor variable, such as depth? 
 
 Let's take a look:
 
@@ -75,7 +75,7 @@ hist(PriceDie, col='grey', freq=FALSE)
 
 ```
 
-Remember, a normal distribution takes the shape of a bellcurve. The histogram above certaintly doesn't look normally distributed, but let's take a look at one more visual.
+Remember, a normal distribution takes the shape of a bell-curve. The histogram above certainty doesn't look normally distributed, but let's take a look at one more visual.
 
 ```{r}
 qqnorm(diamonds$price)
@@ -83,7 +83,7 @@ qqline(diamonds$price)
 
 ```
 If the data was distributed normally, the data points would fall along the line almost perfectly. As we can see above, this is not the case. 
-As a result we are going to perform a non-parametric test on the data, rather than a paramentric test that assumes normality. 
+As a result we are going to perform a non-parametric test on the data, rather than a parametric test that assumes normality. 
 
 Since the variables we are interested in are continuous, we will run Pearson's R which will tell us the strength and direction of the variables' relationship. 
 
@@ -101,7 +101,7 @@ cor.test(carat, price, method = "pearson")
 
 The relationship between the carat size and the price is __statistically significant__, meaning the likelihood of obtaining this result by chance is very small. The t statistic reinforces this conclusion. 
 
-The strength of Pearson’s correlation indicates that there is a __strong relationship__ between the variables (perfect, positive relationship at 1, no relationship between the variables at 0, and a perfect negative relationship at -1). The carat size explains approxiamtely __84%__ of the dependent variable: the price of the diamond. In other words, approx. 16% of the variation in price is unexplained by carat size probably due to the influence of other variables (and measurement error, etc.).   
+The strength of Pearson’s correlation indicates that there is a __strong relationship__ between the variables (perfect, positive relationship at 1, no relationship between the variables at 0, and a perfect negative relationship at -1). The carat size explains approximately __84%__ of the dependent variable: the price of the diamond. In other words, approx. 16% of the variation in price is unexplained by carat size probably due to the influence of other variables (and measurement error, etc.).   
 
 ```{r}
 cor.test(depth, price, method = "pearson")
@@ -113,11 +113,9 @@ The relationship between the depth of the diamond and the price is significant. 
 #### Linear Regression
 In simple linear regression a single independent variable is used to predict the value of a dependent variable. In multiple linear regression two or more independent variables are used to predict the value of a dependent variable. The difference between the two is the number of independent variables. The type of regression will depend on the type of variables (dichotomous, discrete, continuous, etc.), and the number of IVs. 
 
-
 If you run a simple linear regression with x and y variables, carat and cost, then you will get the same results as we have above since the square of Pearson's correlation coefficient is the same as R-squared in a simple linear regression.
 
-__R-squared (Correlation Coefficient)__: a value approaching +/- 1.00 indicates a strong linear relationship between variables and thus, less unexplained variation the closer to one, the better fit the data points to the regression line-- predicts the variance.
-R-squared is a statistical measure of how close the data are to the fitted regression line. 
+__R-squared (Correlation Coefficient)__: Take Pearson's r and square it. Abracadabra, we have calculated our percentage of explained variation (once you move the decimal point two spaces to the right). A value approaching +/- 1.00 indicates a strong linear relationship between variables and thus, less unexplained variation.  
 
 For example, the graph below illustrates a perfect linear relationship. 
 
@@ -125,7 +123,9 @@ For example, the graph below illustrates a perfect linear relationship.
 xyplot(price~price, data = diamonds)
 ```
 
-Unlike a correlation (Spearman's Rho or Kendall's Tau), a regression will allow you input multiple variables into your model to account for other factors that could effecting the price of the diamond which will help you better predict the price. So let’s control for the cut of a diamond.
+Unlike a correlation (Spearman's Rho or Kendall's Tau), a regression will allow you input multiple variables into your model to account for other factors that could effecting the price of the diamond which will help you better predict the price. 
+
+So let’s control for the depth of a diamond:
 
 ```{r}
 xyplot(price ~ carat, data = diamonds,
@@ -166,7 +166,7 @@ summary(diamondregdep)
 Interpretation:
 
 
-Perhaps the most common and most powerful statistical technique that we use is Multiple Regression where several variables are used collectively to predict scores on a single outcome variable, a quantitative outcome usually. The forumale interface is the same structure for the bivariate analyses performed above except we will add variables to the model now.
+Perhaps the most common and most powerful statistical technique that we use is Multiple Regression where several variables are used collectively to predict scores on a single outcome variable, a quantitative outcome usually. The formula interface is the same structure for the bi-variate analyses performed above except we will add variables to the model now.
 
 ```{r}
 multregdiamond = lm(price ~ depth + carat, data = diamonds)
@@ -177,7 +177,7 @@ multregdie <- lm(price ~ depth + carat, data = diamonds)
 multregdie
 ```
 
-If we just look at reg1, that's the object we just created, it's gonna give us just the coefficients. It gives us the call there and it gives us the coeffcients and you can see, for instance, that some of them are positive, some of them are negative. 
+If we just look at reg1, that's the object we just created, it's gonna give us just the coefficients. It gives us the call there and it gives us the coefficients and you can see, for instance, that some of them are positive, some of them are negative. 
 
 
 Resources: http://www.socialresearchmethods.net/selstat/p7_2.htm
