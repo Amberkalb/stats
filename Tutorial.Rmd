@@ -101,25 +101,31 @@ cor.test(carat, price, method = "pearson")
 
 The relationship between the carat size and the price is __statistically significant__, meaning the likelihood of obtaining this result by chance is very small. The t statistic reinforces this conclusion. 
 
-The strength of Pearson’s correlation indicates that the model is a good fit: __strong relationship__ (perfect, positive relationship at 1, no relationship between the variables at 0, and a perfect negative relationship at -1). The carat size explains approxiamtely __92%__ of the dependent variable: the price of the diamond. In other words, approx. 8% of the variation in price is unexplained by carat size probably due to the influence of other variables (and measurement error, etc.).   
+The strength of Pearson’s correlation indicates that there is a __strong relationship__ between the variables (perfect, positive relationship at 1, no relationship between the variables at 0, and a perfect negative relationship at -1). The carat size explains approxiamtely __84%__ of the dependent variable: the price of the diamond. In other words, approx. 16% of the variation in price is unexplained by carat size probably due to the influence of other variables (and measurement error, etc.).   
 
 ```{r}
 cor.test(depth, price, method = "pearson")
 ```
 ######Interpretation: 
 
-The relationship between the depth of the diamond and the price is significant.  Pearson's R-squared (cor) tells us that the relationship is weak and negative. In other words, while this relationship is unlikely to be obtained by chance (sig. level), the larger the depth of a diamond, the lesser the cost. Furthermore, the depth of a diamond only explains 1% of the variation in price. 
+The relationship between the depth of the diamond and the price is significant.  Pearson's r (cor) tells us that the relationship is weak and negative. In other words, while this relationship is unlikely to be obtained by chance (sig. level), the larger the depth of a diamond, the lesser the cost. Furthermore, the depth of a diamond only explains 1% of the variation in price. 
 
 #### Linear Regression
-Only used when your dependent v. is continuous
-Use logistic when DV is dichotomous 
-(variables are important to determine the appropriate test). 
+In simple linear regression a single independent variable is used to predict the value of a dependent variable. In multiple linear regression two or more independent variables are used to predict the value of a dependent variable. The difference between the two is the number of independent variables. The type of regression will depend on the type of variables (dichotomous, discrete, continuous, etc.), and the number of IVs. 
 
-If you just do put carat and cost, then you will get the same results.
-R squared: the higher the number (closer to one) the better fit the data points to the regression line-- predicts the variance.
+
+If you run a simple linear regression with x and y variables, carat and cost, then you will get the same results as we have above since the square of Pearson's correlation coefficient is the same as R-squared in a simple linear regression.
+
+__R-squared (Correlation Coefficient)__: a value approaching +/- 1.00 indicates a strong linear relationship between variables and thus, less unexplained variation the closer to one, the better fit the data points to the regression line-- predicts the variance.
 R-squared is a statistical measure of how close the data are to the fitted regression line. 
 
-Unlike a correlation, A regression will allow you input multiple variables into your model to account for other factors that could effecting the price of the diamond which will help you better predict the price. So let’s control for the cut of a diamond.
+For example, the graph below illustrates a perfect linear relationship. 
+
+```{r}
+xyplot(price~price, data = diamonds)
+```
+
+Unlike a correlation (Spearman's Rho or Kendall's Tau), a regression will allow you input multiple variables into your model to account for other factors that could effecting the price of the diamond which will help you better predict the price. So let’s control for the cut of a diamond.
 
 ```{r}
 xyplot(price ~ carat, data = diamonds,
