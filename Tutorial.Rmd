@@ -111,6 +111,7 @@ cor.test(depth, price, method = "pearson")
 The relationship between the depth of the diamond and the price is significant.  Pearson's r (cor) tells us that the relationship is weak and negative. In other words, while this relationship is unlikely to be obtained by chance (sig. level), the larger the depth of a diamond, the lesser the cost. Furthermore, the depth of a diamond only explains 1% of the variation in price. 
 
 #### Linear Regression
+
 In simple linear regression a single independent variable is used to predict the value of a dependent variable. In multiple linear regression two or more independent variables are used to predict the value of a dependent variable. The difference between the two is the number of independent variables. The type of regression will depend on the type of variables (dichotomous, discrete, continuous, etc.), and the number of IVs. 
 
 If you run a simple linear regression with x and y variables, carat and cost, then you will get the same results as we have above since the square of Pearson's correlation coefficient is the same as R-squared in a simple linear regression.
@@ -123,27 +124,18 @@ For example, the graph below illustrates a perfect linear relationship.
 xyplot(price~price, data = diamonds)
 ```
 
-Unlike a correlation (Spearman's Rho or Kendall's Tau), a regression will allow you input multiple variables into your model to account for other factors that could effecting the price of the diamond which will help you better predict the price. 
-
-So let’s control for the depth of a diamond:
-
-```{r}
-xyplot(price ~ carat, data = diamonds,
-  xlab = "Carat Size",
-  ylab = "Price",
-  main = "The Price of Diamonds by Carat Size") 
-```
+######Controling for Third Variable
 
 Simple (as well as multiple) linear regression is done using the lm() function. For simple regression the formula takes the form DV ~ IV, which should be read something like "DV as modeled by IV" or "DV as predicted by IV". It's critical to remember that the DV must come before the IV. 
 
 ```{r}
-diamondreg = lm(price ~ carat, data = diamonds)
+diamondreg = lm(price ~ carat + depth, data = diamonds)
 summary(diamondreg)
 ```
 Interpretation:
 Coefficient table is my regression   
 
-Under model summary our R squared tells us that the model predicts 87% of the variation in the model. 
+Under model summary our R squared tells us that the model predicts 85% of the variation. 
 R-squared = Explained variation / Total variation
 R-squared is always between 0 and 100%:
 13% of the variation of the cost of the ring cannot be explained by the cut and carat size, 87% of variation in the different prices for the diamonds can be explained by the cut and the carat.
