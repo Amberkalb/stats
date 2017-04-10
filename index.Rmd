@@ -1,11 +1,11 @@
 ---
-title: "index"
-output: html_notebook
+title: "index.Rmd"
+author: "Amber"
+date: "4/10/2017"
+output: html_document
 ---
 
-
-
-```{r}
+```{r }
 rmd <- Sys.glob("*.Rmd")
 rmd <- rmd[rmd != "index.Rmd"]
 html <- sub(".Rmd", ".html", rmd)
