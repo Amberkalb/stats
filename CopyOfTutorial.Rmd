@@ -1,0 +1,182 @@
+---
+title: "Correlation and Regression Tutorial"
+author: "Amber"
+date: "4/3/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(repos=structure(c(CRAN="http://cran.r-project.org")))
+options(repos="https://cran.rstudio.com" )
+install.packages("pscl", repos = "https://cran.rstudio.com")
+install.packages("dplyr")
+install.packages("ggplot2")
+```
+##Introduction
+
+### Statistical Models, what is it good for?
+The purpose of statistics is to describe and predict information. This can be divided into descriptive statistics and inferential statistics. Sometimes we collect data in an attempt to describe the characteristics of a population and other times we want to make predictions.
+
+__Statistical Models__ are built from the data we collect in order to explain a certain phenomenon. Using our collected data, we want to construct a model that represents the processes in real world as close as possible. Once the model is built, we can use it to test our hypotheses and make predictions. In other words, models are representations for a purpose. Models will differ depending on your research question (your purpose).
+
+### Types of Models
+We will be going over two types of statistical models that can be built in R: __correlations__ and __linear regressions__.
+But, before you can understand the types of statistical models, we must first understand the reason these models exist. Statistical models exist because we are looking for a relationship between two, or sometimes more, variables.
+
+In the case of correlations, we are looking for how much variables co-vary. There are a variety of test we can run to find the relationship between variables, but the appropriate test will depend on the type of variables we want to model. 
+
+In this tutorial we will be using the diamonds data frame to model the relationship between carat, cut, color, depth, clarity and price. 
+
+Let's look at our at our variables:
+
+```{r}
+library(ggplot2)
+
+diamonds 
+```
+
+As we can see there are continuous and discrete variables. The type of test you run will be dependent on the type of data you want to model. For a correlation, both DV and IV should be continuous. But, for example, if you have two categorical variables, a Chi square test would be appropriate to find out the differences between groups. 
+
+#### Correlations
+Let's say you wanted estimate the price of a diamond. You might ask what the relationship is between the carat and the cost of the diamond in order to predict how many ramen noodle packages you might need to consume before you can afford your diamond. Would the relationship be positive between carat and cost (the larger the carat, the higher the cost?), negative (the larger the carat, the lower the cost?), or if there is even a relationship to begin with (the carat size has no relationship with the cost, maybe the cut matters)?
+
+Since our variables (carat and cost) are continuous (interval-ratio), we will be performing a zero-ordered correlation, which will answer two questions: (1) How strongly and (2) in what direction (i.e., +, -) are the IV and DV related? 
+
+```{r, Warning = FALSE}
+library("Hmisc")
+attach(diamonds)
+plot(carat, price, main="Scatterplot of Price and Carat", 
+  	xlab="Carat Size", ylab="Price") 
+```
+
+By creating a scatter plot, we are able to see that there is a __positive relationship__ between the carat size and cost of a diamond. But we do not know the exact strength of that relationship (to what degree they co-vary). Furthermore, what if the cost of the diamond had a more ambiguous relationship with another predictor variable, such as depth? 
+
+Let's take a look:
+
+```{r, warning= FALSE}
+attach(diamonds)
+plot(depth, price, main="Scatterplot of Price and Depth", 
+  	xlab="Depth", ylab="price") 
+```
+
+In order to definitively check the direction and strength of the relationships, rather than eye-balling it, we would want to run a correlation test.
+
+Let's make sure we meet the assumptions for correlations:
+1. Big N size, check.
+2. Random sampling, check (I think...).
+3. Normal Distribution Curve, let's check. 
+
+```{r, warning= FALSE}
+PriceDie <- diamonds$price
+hist(PriceDie, col='grey', freq=FALSE)
+
+```
+
+Remember, a normal distribution takes the shape of a bell-curve. The histogram above certainty doesn't look normally distributed, but let's take a look at one more visual.
+
+```{r}
+qqnorm(diamonds$price)
+qqline(diamonds$price)
+
+```
+If the data was distributed normally, the data points would fall along the line almost perfectly. As we can see above, this is not the case. 
+As a result we are going to perform a non-parametric test on the data, rather than a parametric test that assumes normality. 
+
+Since the variables we are interested in are continuous, we will run Pearson's R which will tell us the strength and direction of the variables' relationship. 
+
+Sig. @: 
+  .05--95% 
+  .01--97% 
+	.001---99% 
+	 
+
+
+```{r}
+cor.test(carat, price, method = "pearson")
+```
+#####Interpretation:
+
+The relationship between the carat size and the price is __statistically significant__, meaning the likelihood of obtaining this result by chance is very small. The t statistic reinforces this conclusion. 
+
+The strength of Pearson’s correlation indicates that there is a __strong relationship__ between the variables (perfect, positive relationship at 1, no relationship between the variables at 0, and a perfect negative relationship at -1). The carat size explains approximately __84%__ of the dependent variable: the price of the diamond. In other words, approx. 16% of the variation in price is unexplained by carat size probably due to the influence of other variables (and measurement error, etc.).   
+
+```{r}
+cor.test(depth, price, method = "pearson")
+```
+#####Interpretation: 
+
+The relationship between the depth of the diamond and the price is significant.  Pearson's r (cor) tells us that the relationship is weak and negative. In other words, while this relationship is unlikely to be obtained by chance (sig. level), the larger the depth of a diamond, the lesser the cost. Furthermore, the depth of a diamond only explains 1% of the variation in price. 
+
+#### Linear Regression
+
+In simple linear regression a single independent variable is used to predict the value of a dependent variable. In multiple linear regression two or more independent variables are used to predict the value of a dependent variable. The difference between the two is the number of independent variables. The type of regression will depend on the type of variables (dichotomous, discrete, continuous, etc.), and the number of IVs. 
+
+If you run a simple linear regression with x and y variables, carat and cost, then you will get the same results as we have above since the square of Pearson's correlation coefficient is the same as R-squared in a simple linear regression.
+
+__R-squared (Correlation Coefficient)__: Take Pearson's r and square it. Abracadabra, we have calculated our percentage of explained variation (once you move the decimal point two spaces to the right). A value approaching +/- 1.00 indicates a strong linear relationship between variables and thus, less unexplained variation.  
+
+For example, the graph below illustrates a perfect linear relationship. 
+
+```{r}
+xyplot(price~price, data = diamonds)
+```
+
+
+Simple (as well as multiple) linear regression is done using the lm() function. For simple regression the formula takes the form DV ~ IV, which should be read something like "DV as modeled by IV" or "DV as predicted by IV". It's critical to remember that the DV must come before the IV. 
+
+Interpretation:
+Coefficient table is my regression   
+
+Under model summary our R squared tells us that the model predicts 85% of the variation. 
+R-squared = Explained variation / Total variation
+R-squared is always between 0 and 100%:
+13% of the variation of the cost of the ring cannot be explained by the cut and carat size, 87% of variation in the different prices for the diamonds can be explained by the cut and the carat.
+Standardized Coefficient Beta = beta weights (positive and negative will be indicated) For example: both carat and depth significantly contribute to explaining the price of diamond rings. The larger the carat, the higher the price. The larger the depth, the price decreases. 
+DEPTH is good for showing ambiguous relationship. 
+Price, not normal distribution, consider top-coding (shave off the top 5%). 
+
+Now, Let's graph it!
+```{r}
+plot(price ~ carat, data= diamonds, main="I got Diamonds on Diamonds")
+abline(lm(price~carat), col="red")
+
+```
+
+
+```{r}
+diamondregdep = lm(price ~ depth, data = diamonds)
+summary(diamondregdep)
+```
+#####Interpretation: 
+Blah, blah,blah.
+
+
+```{r}
+plot(price ~ depth, data= diamonds, main="I Got Diamonds on Diamonds")
+abline(lm(price~depth), col="red")
+```
+
+#####Controling for Third Variable
+Perhaps the most common and most powerful statistical technique that we use is Multiple Regression where several variables are used collectively to predict scores on a single outcome variable, a quantitative outcome usually. The formula interface is the same structure for the bi-variate analyses performed above except we will add variables to the model now.
+
+```{r}
+multregdiamond = lm(price ~ depth + carat, data = diamonds)
+summary(multregdiamond)
+
+```
+
+#####Interpretation:
+Blah, Blah, Blah.
+```{r}
+
+```
+
+
+__Resources:__ 
+
+http://www.socialresearchmethods.net/selstat/p7_2.htm
+
+http://www.csun.edu/~amarenco/Fcs%20682/lecture%206%20statistical%20tests%20decision%20tree.htm
+
+https://www.lynda.com/R-tutorials.htm
